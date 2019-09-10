@@ -64,12 +64,12 @@ function ImagePickScreen() {
       <Text>テロップを付ける画像を選択してください。</Text>
       {!hasPermissionCameraRoll && (
         <>
-          <Text>
+          <Text style={styles.notice}>
             写真にアクセスする権限がありません。アプリの設定画面でカメラロールへのアクセスを許可してください。
           </Text>
           {!Constants.platform.web && (
             <TouchableOpacity onPress={openAppSetting} style={styles.btn}>
-              <Text style={styles.btnText}>アプリの設定を開く</Text>
+              <Text style={styles.btnText}>アプリの設定画面を開く</Text>
             </TouchableOpacity>
           )}
         </>
@@ -89,6 +89,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center"
+  },
+  notice: {
+    marginTop: 32,
+    color: "#f66"
   },
   btn: {
     marginTop: 32,

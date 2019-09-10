@@ -15,6 +15,7 @@ import Constants from "expo-constants";
 function ImagePickScreen() {
   const [hasPermissionCameraRoll, setHasPermissionCameraRoll] = useState(false);
   const [hasPermissionCamera, setHasPermissionCamera] = useState(false);
+  const [photoUri, setPhotoUri] = useState(null);
 
   const openAppSetting = () => {
     if (Constants.platform.android) {
@@ -55,6 +56,21 @@ function ImagePickScreen() {
     }
   };
 
+  const openImagePicker = async ({ type = "library" }) => {
+    const imageOption: ImagePicker.ImagePickerOptions = {
+      allowsEditing: Boolean(Constants.platform.android),
+      aspect: [3, 2]
+    };
+
+    const photo: ImagePicker.ImagePickerResult =
+      type === "camera"
+        ? await ImagePicker.launchCameraAsync(imageOption)
+        : await ImagePicker.launchImageLibraryAsync(imageOption);
+    if (!photo.cancelled) {
+      setPhotoUri(photo.uri);
+    }
+  };
+
   useEffect(() => {
     checkCameraAndImagePermission();
   }, []);
@@ -62,6 +78,24 @@ function ImagePickScreen() {
   return (
     <View style={styles.container}>
       <Text>テロップを付ける画像を選択してください。</Text>
+      <View style={styles.btnArea}>
+        {hasPermissionCamera && !Constants.platform.web && (
+          <TouchableOpacity
+            onPress={() => openImagePicker({ type: "camera" })}
+            style={styles.btn}
+          >
+            <Text style={styles.btnText}>カメラを開く</Text>
+          </TouchableOpacity>
+        )}
+        {hasPermissionCameraRoll && (
+          <TouchableOpacity
+            onPress={() => openImagePicker({ type: "library" })}
+            style={styles.btn}
+          >
+            <Text style={styles.btnText}>ライブラリを開く</Text>
+          </TouchableOpacity>
+        )}
+      </View>
       {!hasPermissionCameraRoll && (
         <>
           <Text style={styles.notice}>
@@ -94,8 +128,12 @@ const styles = StyleSheet.create({
     marginTop: 32,
     color: "#f66"
   },
+  btnArea: {
+    flexDirection: "row"
+  },
   btn: {
     marginTop: 32,
+    marginHorizontal: 16,
     backgroundColor: "#099",
     borderRadius: 4,
     paddingVertical: 8,

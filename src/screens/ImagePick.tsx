@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Linking,
+  Image,
   TouchableOpacity,
   Text,
   View,
@@ -12,7 +13,7 @@ import * as IntentLauncher from "expo-intent-launcher";
 import * as Permissions from "expo-permissions";
 import Constants from "expo-constants";
 
-function ImagePickScreen() {
+function ImagePickScreen(props) {
   const [hasPermissionCameraRoll, setHasPermissionCameraRoll] = useState(false);
   const [hasPermissionCamera, setHasPermissionCamera] = useState(false);
   const [photoUri, setPhotoUri] = useState(null);
@@ -71,6 +72,14 @@ function ImagePickScreen() {
     }
   };
 
+  const removePhoto = () => {
+    setPhotoUri(null);
+  };
+
+  const gotoEditScreen = () => {
+    props.navigation.navigate("EditScreen", { photoUri });
+  };
+
   useEffect(() => {
     checkCameraAndImagePermission();
   }, []);
@@ -78,24 +87,38 @@ function ImagePickScreen() {
   return (
     <View style={styles.container}>
       <Text>テロップを付ける画像を選択してください。</Text>
-      <View style={styles.btnArea}>
-        {hasPermissionCamera && !Constants.platform.web && (
-          <TouchableOpacity
-            onPress={() => openImagePicker({ type: "camera" })}
-            style={styles.btn}
-          >
-            <Text style={styles.btnText}>カメラを開く</Text>
-          </TouchableOpacity>
-        )}
-        {hasPermissionCameraRoll && (
-          <TouchableOpacity
-            onPress={() => openImagePicker({ type: "library" })}
-            style={styles.btn}
-          >
-            <Text style={styles.btnText}>ライブラリを開く</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      {photoUri ? (
+        <>
+          <Image source={{ uri: photoUri }} style={styles.img} />
+          <View style={styles.btnArea}>
+            <TouchableOpacity style={styles.btn} onPress={removePhoto}>
+              <Text style={styles.btnText}>やり直す</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.btn} onPress={gotoEditScreen}>
+              <Text style={styles.btnText}>これでOK</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      ) : (
+        <View style={styles.btnArea}>
+          {hasPermissionCamera && !Constants.platform.web && (
+            <TouchableOpacity
+              onPress={() => openImagePicker({ type: "camera" })}
+              style={styles.btn}
+            >
+              <Text style={styles.btnText}>カメラを開く</Text>
+            </TouchableOpacity>
+          )}
+          {hasPermissionCameraRoll && (
+            <TouchableOpacity
+              onPress={() => openImagePicker({ type: "library" })}
+              style={styles.btn}
+            >
+              <Text style={styles.btnText}>ライブラリを開く</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
       {!hasPermissionCameraRoll && (
         <>
           <Text style={styles.notice}>
@@ -141,5 +164,10 @@ const styles = StyleSheet.create({
   },
   btnText: {
     color: "#fff"
+  },
+  img: {
+    marginTop: 32,
+    width: 300,
+    height: 200
   }
 });

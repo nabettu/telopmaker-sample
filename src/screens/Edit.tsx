@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Header } from "react-navigation-stack";
 import {
   KeyboardAvoidingView,
+  TouchableOpacity,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -9,10 +10,30 @@ import {
   Text,
   View
 } from "react-native";
+import { captureRef } from "react-native-view-shot";
 const telopImg = require("app/assets/telop.png");
 
 function EditScreen(props) {
   const [text, setText] = useState("サンプルテキスト");
+  const [captureContainerRef, setCaptureContainerRef] = useState(null);
+  const [captureImageUri, setcaptureImageUri] = useState(null);
+
+  const pressDone = async () => {
+    if (!captureContainerRef) {
+      return;
+    }
+    const result = await captureRef(captureContainerRef, {
+      result: "tmpfile",
+      width: 600,
+      height: 400,
+      quality: 1,
+      format: "png"
+    });
+    if (result) {
+      setcaptureImageUri(result);
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -21,7 +42,10 @@ function EditScreen(props) {
     >
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <Text>テロップに載せるテキストを入力してください。</Text>
-        <View style={styles.captureArea}>
+        <View
+          style={styles.captureArea}
+          ref={ref => setCaptureContainerRef(ref)}
+        >
           <Image
             source={{
               uri: props.navigation.getParam(
@@ -39,6 +63,15 @@ function EditScreen(props) {
           style={styles.textInput}
           onChangeText={inputText => setText(inputText)}
         />
+        <TouchableOpacity style={styles.btn} onPress={pressDone}>
+          <Text style={styles.btnText}>画像を生成する</Text>
+        </TouchableOpacity>
+        {captureImageUri && (
+          <Image
+            source={{ uri: captureImageUri }}
+            style={styles.captureImage}
+          />
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -65,6 +98,11 @@ const styles = StyleSheet.create({
     height: 200
   },
   img: {
+    width: 300,
+    height: 200
+  },
+  captureImage: {
+    marginTop: 32,
     width: 300,
     height: 200
   },

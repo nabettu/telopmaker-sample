@@ -1,31 +1,46 @@
 import React, { useState } from "react";
-import { StyleSheet, TextInput, Image, Text, View } from "react-native";
+import { Header } from "react-navigation-stack";
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  Image,
+  Text,
+  View
+} from "react-native";
 const telopImg = require("app/assets/telop.png");
 
 function EditScreen(props) {
   const [text, setText] = useState("サンプルテキスト");
   return (
-    <View style={styles.container}>
-      <Text>テロップに載せるテキストを入力してください。</Text>
-      <View style={styles.captureArea}>
-        <Image
-          source={{
-            uri: props.navigation.getParam(
-              "photoUri",
-              "https://placehold.jp/150x150.png"
-            )
-          }}
-          style={styles.img}
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior="padding"
+      keyboardVerticalOffset={Header.HEIGHT}
+    >
+      <ScrollView contentContainerStyle={styles.contentContainer}>
+        <Text>テロップに載せるテキストを入力してください。</Text>
+        <View style={styles.captureArea}>
+          <Image
+            source={{
+              uri: props.navigation.getParam(
+                "photoUri",
+                "https://placehold.jp/150x150.png"
+              )
+            }}
+            style={styles.img}
+          />
+          <Image source={telopImg} style={styles.telop} />
+          <Text style={styles.telopText}>{text}</Text>
+        </View>
+        <TextInput
+          defaultValue={text}
+          style={styles.textInput}
+          onChangeText={inputText => setText(inputText)}
         />
-        <Image source={telopImg} style={styles.telop} />
-        <Text style={styles.telopText}>{text}</Text>
-      </View>
-      <TextInput
-        defaultValue={text}
-        style={styles.textInput}
-        onChangeText={inputText => setText(inputText)}
-      />
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -34,9 +49,10 @@ export default EditScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingTop: 32,
-    paddingHorizontal: 16,
+    flex: 1
+  },
+  contentContainer: {
+    paddingVertical: 32,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center"

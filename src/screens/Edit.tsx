@@ -1,18 +1,29 @@
-import React from "react";
-import { StyleSheet, Image, Text, View } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, TextInput, Image, Text, View } from "react-native";
+const telopImg = require("app/assets/telop.png");
 
 function EditScreen(props) {
+  const [text, setText] = useState("サンプルテキスト");
   return (
     <View style={styles.container}>
       <Text>テロップに載せるテキストを入力してください。</Text>
-      <Image
-        source={{
-          uri: props.navigation.getParam(
-            "photoUri",
-            "https://placehold.jp/150x150.png"
-          )
-        }}
-        style={styles.img}
+      <View style={styles.captureArea}>
+        <Image
+          source={{
+            uri: props.navigation.getParam(
+              "photoUri",
+              "https://placehold.jp/150x150.png"
+            )
+          }}
+          style={styles.img}
+        />
+        <Image source={telopImg} style={styles.telop} />
+        <Text style={styles.telopText}>{text}</Text>
+      </View>
+      <TextInput
+        defaultValue={text}
+        style={styles.textInput}
+        onChangeText={inputText => setText(inputText)}
       />
     </View>
   );
@@ -30,10 +41,46 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
-  img: {
-    margin: 16,
+  captureArea: {
+    position: "relative",
+    overflow: "hidden",
+    marginTop: 32,
     width: 300,
     height: 200
+  },
+  img: {
+    width: 300,
+    height: 200
+  },
+  telop: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    width: 280,
+    height: 280 / 5,
+    resizeMode: "cover"
+  },
+  telopText: {
+    position: "absolute",
+    bottom: 10,
+    height: 45,
+    lineHeight: 45,
+    width: "100%",
+    textAlign: "center",
+    fontSize: 17,
+    fontWeight: "bold",
+    color: "#660000",
+    left: 0
+  },
+  textInput: {
+    backgroundColor: "#ccc",
+    borderWidth: 1,
+    borderColor: "#666",
+    borderRadius: 4,
+    marginTop: 16,
+    padding: 8,
+    fontSize: 20,
+    width: 300
   },
   btn: {
     marginTop: 32,

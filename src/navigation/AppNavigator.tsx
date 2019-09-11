@@ -7,8 +7,8 @@ import EditScreen from "app/src/screens/Edit";
 
 export default createAppContainer(
   createStackNavigator({
+    EditScreen: { screen: EditScreen },
     AboutScreen: { screen: AboutScreen },
-    ImagePickScreen: { screen: ImagePickScreen },
-    EditScreen: { screen: EditScreen }
+    ImagePickScreen: { screen: ImagePickScreen }
   })
 );

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Header } from "react-navigation-stack";
 import {
+  Alert,
+  CameraRoll,
   KeyboardAvoidingView,
   TouchableOpacity,
   ScrollView,
@@ -10,6 +12,7 @@ import {
   Text,
   View
 } from "react-native";
+import Constants from "expo-constants";
 import { captureRef } from "react-native-view-shot";
 const telopImg = require("app/assets/telop.png");
 
@@ -18,7 +21,7 @@ function EditScreen(props) {
   const [captureContainerRef, setCaptureContainerRef] = useState(null);
   const [captureImageUri, setcaptureImageUri] = useState(null);
 
-  const pressDone = async () => {
+  const captureImage = async () => {
     if (!captureContainerRef) {
       return;
     }
@@ -32,6 +35,11 @@ function EditScreen(props) {
     if (result) {
       setcaptureImageUri(result);
     }
+  };
+
+  const saveImage = () => {
+    CameraRoll.saveToCameraRoll(captureImageUri);
+    Alert.alert("ライブラリに保存しました");
   };
 
   return (
@@ -63,14 +71,23 @@ function EditScreen(props) {
           style={styles.textInput}
           onChangeText={inputText => setText(inputText)}
         />
-        <TouchableOpacity style={styles.btn} onPress={pressDone}>
+        <TouchableOpacity style={styles.btn} onPress={captureImage}>
           <Text style={styles.btnText}>画像を生成する</Text>
         </TouchableOpacity>
         {captureImageUri && (
-          <Image
-            source={{ uri: captureImageUri }}
-            style={styles.captureImage}
-          />
+          <>
+            <Image
+              source={{ uri: captureImageUri }}
+              style={styles.captureImage}
+            />
+            {Constants.platform.web ? (
+              <Text>画像を長押しして保存してください</Text>
+            ) : (
+              <TouchableOpacity style={styles.btn} onPress={saveImage}>
+                <Text style={styles.btnText}>画像を保存する</Text>
+              </TouchableOpacity>
+            )}
+          </>
         )}
       </ScrollView>
     </KeyboardAvoidingView>

@@ -2,9 +2,9 @@ import React from "react";
 import { TouchableOpacity, StyleSheet, Text, Image, View } from "react-native";
 const sampleImg = require("app/assets/sample.png");
 
-function AboutScreen(props) {
+export const AboutScreen = ({ navigation }) => {
   const gotoImagePickScreen = () => {
-    props.navigation.navigate("ImagePickScreen");
+    navigation.navigate("ImagePick");
   };
   return (
     <View style={styles.container}>
@@ -17,10 +17,7 @@ function AboutScreen(props) {
       </TouchableOpacity>
     </View>
   );
-}
-
-AboutScreen.navigationOptions = { title: "本アプリについて" };
-export default AboutScreen;
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -29,21 +26,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   img: {
     margin: 16,
     width: 300,
-    height: 200
+    height: 200,
   },
   btn: {
     marginTop: 32,
     backgroundColor: "#099",
     borderRadius: 4,
     paddingVertical: 8,
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
   },
   btnText: {
-    color: "#fff"
-  }
+    color: "#fff",
+  },
 });

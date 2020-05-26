@@ -3,15 +3,16 @@ import "react-native-gesture-handler";
 import { StyleSheet, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { AppNavigator } from "app/src/navigation/AppNavigator";
+import { routes } from "app/routes";
 
 const linking = {
   prefixes: ["https://https://telopmaker-sample.netlify.app/"],
   config: {
-    About: "about",
-    SelectType: "selectype",
-    ImagePick: "imagePick/:telopType",
+    About: routes.About,
+    SelectType: routes.SelectType,
+    ImagePick: `${routes.ImagePick}/:telopType`,
     Edit: {
-      path: "edit",
+      path: routes.Edit,
       stringify: {
         photoUri: () => "localData",
       },

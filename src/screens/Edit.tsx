@@ -14,10 +14,15 @@ import {
 } from "react-native";
 import Constants from "expo-constants";
 import { captureRef } from "react-native-view-shot-with-web-support";
-const telopImg = require("app/assets/telop.png");
+const telopImg1 = require("app/assets/telop1.png");
+const telopImg2 = require("app/assets/telop2.png");
 
 export const EditScreen = ({ route }) => {
-  const { photoUri = "https://placehold.jp/150x150.png" } = route.params;
+  const {
+    photoUri = "https://placehold.jp/150x150.png",
+    telopType,
+  } = route.params;
+  const telopImg = telopType == "1" ? telopImg1 : telopImg2;
   const headerHeight = useHeaderHeight();
 
   const [text, setText] = useState("サンプルテキスト");
@@ -64,7 +69,11 @@ export const EditScreen = ({ route }) => {
             style={styles.img}
           />
           <Image source={telopImg} style={styles.telop} />
-          <Text style={styles.telopText}>{text}</Text>
+          <Text
+            style={[styles.telopText, telopType === "2" && { color: "#fff" }]}
+          >
+            {text}
+          </Text>
         </View>
         <TextInput
           defaultValue={text}
@@ -118,6 +127,7 @@ const styles = StyleSheet.create({
   },
   captureImage: {
     marginTop: 32,
+    marginBottom: 16,
     width: 300,
     height: 200,
   },

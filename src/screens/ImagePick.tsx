@@ -13,7 +13,7 @@ import * as IntentLauncher from "expo-intent-launcher";
 import * as Permissions from "expo-permissions";
 import Constants from "expo-constants";
 
-export const ImagePickScreen = props => {
+export const ImagePickScreen = ({ navigation, route }) => {
   const [hasPermissionCameraRoll, setHasPermissionCameraRoll] = useState(false);
   const [hasPermissionCamera, setHasPermissionCamera] = useState(false);
   const [photoUri, setPhotoUri] = useState(null);
@@ -77,7 +77,10 @@ export const ImagePickScreen = props => {
   };
 
   const gotoEditScreen = () => {
-    props.navigation.navigate("Edit", { photoUri });
+    navigation.navigate("Edit", {
+      photoUri,
+      telopType: route.params.telopType,
+    });
   };
 
   useEffect(() => {

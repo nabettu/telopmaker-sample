@@ -4,7 +4,7 @@ const sampleImg = require("app/assets/sample.png");
 
 export const AboutScreen = ({ navigation }) => {
   const gotoImagePickScreen = () => {
-    navigation.navigate("ImagePick");
+    navigation.navigate("SelectType");
   };
   return (
     <View style={styles.container}>

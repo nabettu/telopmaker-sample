@@ -6,7 +6,7 @@ import { AppNavigator } from "app/src/navigation/AppNavigator";
 import { routes } from "app/routes";
 
 const linking = {
-  prefixes: ["https://https://telopmaker-sample.netlify.app/"],
+  prefixes: ["https://deploy-preview-4--telopmaker-sample.netlify.app/"],
   config: {
     About: routes.About,
     SelectType: routes.SelectType,

@@ -6,14 +6,14 @@ import {
   TouchableOpacity,
   Text,
   View,
-  Alert
+  Alert,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as IntentLauncher from "expo-intent-launcher";
 import * as Permissions from "expo-permissions";
 import Constants from "expo-constants";
 
-function ImagePickScreen(props) {
+export const ImagePickScreen = ({ navigation, route }) => {
   const [hasPermissionCameraRoll, setHasPermissionCameraRoll] = useState(false);
   const [hasPermissionCamera, setHasPermissionCamera] = useState(false);
   const [photoUri, setPhotoUri] = useState(null);
@@ -26,7 +26,7 @@ function ImagePickScreen(props) {
           data:
             "package:" + Constants.appOwnership === "standalone"
               ? Constants.manifest.android.package
-              : "host.exp.exponent"
+              : "host.exp.exponent",
         }
       );
     } else {
@@ -60,7 +60,7 @@ function ImagePickScreen(props) {
   const openImagePicker = async ({ type = "library" }) => {
     const imageOption: ImagePicker.ImagePickerOptions = {
       allowsEditing: Boolean(Constants.platform.android),
-      aspect: [3, 2]
+      aspect: [3, 2],
     };
 
     const photo: ImagePicker.ImagePickerResult =
@@ -77,7 +77,10 @@ function ImagePickScreen(props) {
   };
 
   const gotoEditScreen = () => {
-    props.navigation.navigate("EditScreen", { photoUri });
+    navigation.navigate("Edit", {
+      photoUri,
+      telopType: route.params.telopType,
+    });
   };
 
   useEffect(() => {
@@ -133,10 +136,7 @@ function ImagePickScreen(props) {
       )}
     </View>
   );
-}
-
-ImagePickScreen.navigationOptions = { title: "画像選択" };
-export default ImagePickScreen;
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -145,14 +145,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   notice: {
     marginTop: 32,
-    color: "#f66"
+    color: "#f66",
   },
   btnArea: {
-    flexDirection: "row"
+    flexDirection: "row",
   },
   btn: {
     marginTop: 32,
@@ -160,14 +160,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#099",
     borderRadius: 4,
     paddingVertical: 8,
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
   },
   btnText: {
-    color: "#fff"
+    color: "#fff",
   },
   img: {
     marginTop: 32,
     width: 300,
-    height: 200
-  }
+    height: 200,
+  },
 });

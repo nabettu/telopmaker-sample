@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Header } from "react-navigation-stack";
+import { useHeaderHeight } from "@react-navigation/stack";
+import * as MediaLibrary from "expo-media-library";
 import {
   Alert,
-  CameraRoll,
   KeyboardAvoidingView,
   TouchableOpacity,
   ScrollView,
@@ -10,13 +10,21 @@ import {
   TextInput,
   Image,
   Text,
-  View
+  View,
 } from "react-native";
 import Constants from "expo-constants";
-import { captureRef } from "react-native-view-shot";
-const telopImg = require("app/assets/telop.png");
+import { captureRef } from "react-native-view-shot-with-web-support";
+const telopImg1 = require("app/assets/telop1.png");
+const telopImg2 = require("app/assets/telop2.png");
 
-function EditScreen(props) {
+export const EditScreen = ({ route }) => {
+  const {
+    photoUri = "https://placehold.jp/150x150.png",
+    telopType,
+  } = route.params;
+  const telopImg = telopType == "1" ? telopImg1 : telopImg2;
+  const headerHeight = useHeaderHeight();
+
   const [text, setText] = useState("サンプルテキスト");
   const [captureContainerRef, setCaptureContainerRef] = useState(null);
   const [captureImageUri, setcaptureImageUri] = useState(null);
@@ -30,7 +38,7 @@ function EditScreen(props) {
       width: 600,
       height: 400,
       quality: 1,
-      format: "png"
+      format: "png",
     });
     if (result) {
       setcaptureImageUri(result);
@@ -38,7 +46,7 @@ function EditScreen(props) {
   };
 
   const saveImage = () => {
-    CameraRoll.saveToCameraRoll(captureImageUri);
+    MediaLibrary.saveToLibraryAsync(captureImageUri);
     Alert.alert("ライブラリに保存しました");
   };
 
@@ -46,7 +54,7 @@ function EditScreen(props) {
     <KeyboardAvoidingView
       style={styles.container}
       behavior="padding"
-      keyboardVerticalOffset={Header.HEIGHT}
+      keyboardVerticalOffset={headerHeight}
     >
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <Text>テロップに載せるテキストを入力してください。</Text>
@@ -56,15 +64,16 @@ function EditScreen(props) {
         >
           <Image
             source={{
-              uri: props.navigation.getParam(
-                "photoUri",
-                "https://placehold.jp/150x150.png"
-              )
+              uri: photoUri,
             }}
             style={styles.img}
           />
           <Image source={telopImg} style={styles.telop} />
-          <Text style={styles.telopText}>{text}</Text>
+          <Text
+            style={[styles.telopText, telopType === "2" && { color: "#fff" }]}
+          >
+            {text}
+          </Text>
         </View>
         <TextInput
           defaultValue={text}
@@ -92,36 +101,35 @@ function EditScreen(props) {
       </ScrollView>
     </KeyboardAvoidingView>
   );
-}
-
-EditScreen.navigationOptions = { title: "編集画面" };
-export default EditScreen;
+};
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: "#fff",
   },
   contentContainer: {
     paddingVertical: 32,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   captureArea: {
     position: "relative",
     overflow: "hidden",
     marginTop: 32,
     width: 300,
-    height: 200
+    height: 200,
   },
   img: {
     width: 300,
-    height: 200
+    height: 200,
   },
   captureImage: {
     marginTop: 32,
+    marginBottom: 16,
     width: 300,
-    height: 200
+    height: 200,
   },
   telop: {
     position: "absolute",
@@ -129,7 +137,7 @@ const styles = StyleSheet.create({
     left: 10,
     width: 280,
     height: 280 / 5,
-    resizeMode: "cover"
+    resizeMode: "cover",
   },
   telopText: {
     position: "absolute",
@@ -141,7 +149,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "bold",
     color: "#660000",
-    left: 0
+    left: 0,
   },
   textInput: {
     backgroundColor: "#ccc",
@@ -151,16 +159,16 @@ const styles = StyleSheet.create({
     marginTop: 16,
     padding: 8,
     fontSize: 20,
-    width: 300
+    width: 300,
   },
   btn: {
     marginTop: 32,
     backgroundColor: "#099",
     borderRadius: 4,
     paddingVertical: 8,
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
   },
   btnText: {
-    color: "#fff"
-  }
+    color: "#fff",
+  },
 });
